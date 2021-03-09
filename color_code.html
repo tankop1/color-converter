@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png"> <!-- Connects to Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon-16x16.png">
+    <link rel="manifest" href="assets/site.webmanifest">
+    <script src="https://kit.fontawesome.com/0bb23f7c87.js" crossorigin="anonymous"></script> <!-- Connects to Font Awesome (SVG Icons) -->
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <title>Tanner's Color Converter</title>
+</head>
+<body>
+    <header>
+        <h1>Tanner's Color Converter</h1>
+        <button id="info-button" title="More Info...">i</button>
+    </header>
+    <div id="popup-container">
+        <div id="popup">
+            <p>This color converter was created by Tanner Kopel for his AP Computer Science Principles class. If you would like to see more of his projects, visit <a href="https://github.com/tankop1" target="_blank">https://github.com/tankop1</a></p>
+        </div>
+    </div>
+    <main>
+        <div id="form-container">
+            <div id="form">
+                <div id="labels">
+                    <label for="r">R</label><label for="g">G</label><label for="b">B</label>
+                </div>
+                <div id="inputs">
+                    <input id="r" type="number" name="r"><input id="g" type="number" name="r"><input id="b" type="number" name="r">
+                </div>
+                <br/>
+                <div id="hide-until-press">
+                    <label for="opacity">Opacity</label>
+                    <input id="opacity" type="range" min="0" max="10" value="10" name="opacity">
+                </div>
+                <br/>
+                <br/>
+                <button id="submit">Create Color</button>
+                <br/>
+                <br/>
+                <div id="show-color">
+                    <p id="hide-on-submit">Enter a color</p>
+                </div>
+                <br/>
+                <br/>
+                <button id="binary-button">Show RGBA</button>
+            </div>
+        </div>
+    </main>
+</body>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Courier New', Courier, monospace;
+    }
+
+    input[type="range"]{
+        width: 50%;
+    }
+
+    input[type=range]{
+        -webkit-appearance: none;
+    }
+
+    input[type=range]::-webkit-slider-runnable-track {
+        height: .4em;
+        background: white;
+        border: .1px solid black;
+        border-radius: 3px;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        border: 1px solid black;
+        height: 1.1em;
+        width: 1.1em;
+        border-radius: 50%;
+        background: white;
+        margin-top: -4px;
+        cursor: pointer;
+    }
+
+    input[type=range]:focus {
+        outline: none;
+    }
+
+    #hide-until-press {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        display: none;
+        width: 90%;
+    }
+
+    #copy-icon {
+        cursor: pointer;
+    }
+
+    #popup {
+        position: fixed;
+        width: 40%;
+        height: 20%;
+        top: 37.5%;
+        left: 30%;
+        padding: 0;
+        margin: 0;
+        background-color: white;
+        border: 2px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        display: none;
+    }
+
+    #popup p {
+        width: 90%;
+        height: max-content;
+        text-align: center;
+    }
+
+    #popup p a {
+        color: black;
+    }
+
+    #popup-container {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0%;
+        left: 0%;
+        padding: 0;
+        margin: 0;
+        background-color: rgb(0, 0, 0, 0.5);
+        z-index: 6;
+        display: none;
+    }
+
+    header {
+        background-color: white;
+        padding: 0px 35px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 10vh;
+    }
+
+    #info-button {
+        border-radius: 10px;
+        background-color: white;
+        border: 2px solid black;
+        color: black;
+        font-weight: bold;
+        font-size: 1.5rem;
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+        z-index: 8;
+        outline: none;
+    }
+
+    #info-button:hover {
+        background-color: lightgrey;
+    }
+
+    main {
+        background-image: url("assets/color-background-2.jpg");
+        background-size: cover;
+        background-position: center;
+        height: 90vh;
+    }
+
+    #form-container {
+        border-radius: 5%;
+        position: fixed;
+        width: 500px;
+        height: 450px;
+        margin-left: 53.5%;
+        margin-top: 12%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #form {
+        width: max-content;
+        height: max-content;
+    }
+
+    #inputs input {
+        width: 80px;
+        display: block;
+        margin: 0 auto;
+        height: 25px;
+        border: 1px solid black;
+        padding: 0px 10px;
+    }
+
+    #submit {
+        display: block;
+        margin: 0 auto;
+        height: 25px;
+        border: 1px solid black;
+        padding: 0px 10px;
+        background-color:rgb(212, 212, 212);
+        cursor: pointer;
+    }
+
+    #binary-button {
+        display: block;
+        margin: 0 auto;
+        border: 1px solid black;
+        padding: 15px;
+        background-color:rgb(212, 212, 212);
+        cursor: pointer;
+    }
+
+    #form label {
+        font-weight: bold;
+        width: max-content;
+        display: block;
+        margin: 0 auto;
+    }
+    
+    #show-color {
+        width: 300px;
+        height: 150px;
+        border: 1px solid black;
+        color: rgb(78, 78, 78);
+        background-color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #hide-on-submit {
+        width: max-content;
+        height: max-content;
+    }
+
+    #labels {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 250px;
+        margin: 0 auto;
+    }
+
+    #inputs {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 250px;
+        margin: 0 auto;
+    }
+
+    #submit {
+        width: 250px;
+    }
+
+    @media only screen and (max-width: 1024px) {
+        #form-container {
+            background-color: white;
+            margin-top: auto;
+            margin-left: auto;
+            border: 2px solid black;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url("assets/color-background-3.jpg");
+        }
+
+        #popup {
+            width: 80%;
+            height: 20%;
+            top: 40%;
+            left: 10%;
+        }
+    }
+
+    @media only screen and (max-width: 550px) {
+        #form-container {
+            width: 400px;
+        }
+    }
+
+    @media only screen and (max-width: 415px) {
+        #form-container {
+            background-color: transparent;
+            border: none;
+        }
+    }
+
+    @media only screen and (min-width: 1599px) {
+        #form-container {
+            background-color: white;
+            margin-top: auto;
+            margin-left: auto;
+            border: 2px solid black;
+        }
+
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-image: url("assets/color-background-4.jpg");
+        }
+
+        #popup {
+            width: 80%;
+            height: 20%;
+            top: 40%;
+            left: 10%;
+        }
+    }
+
+</style>
+<script>
+    // Variable Declarations
+    let submitButton = document.getElementById('submit');
+    let infoButton = document.getElementById('info-button');
+    let colorBox = document.getElementById('show-color');
+    let colorText = document.getElementById('hide-on-submit');
+    let rInput = document.getElementById('r');
+    let gInput = document.getElementById('g');
+    let bInput = document.getElementById('b');
+    let popupContainer = document.getElementById('popup-container');
+    let popup = document.getElementById('popup');
+    let binaryButton = document.getElementById('binary-button');
+    let copyIcon = document.getElementById('copy-icon');
+
+    function detirmineColor(r, g, b) {
+        let total = parseInt(r) + parseInt(g) + parseInt(b);
+
+        if (total < 700) {
+            return 'white';
+        }
+
+        else {
+            return 'black';
+        }
+    } // Detirmines text color of text box
+
+    /*copyIcon.addEventListener('mouseenter', function () {
+        copyIcon.classList.remove('fas');
+        copyIcon.classList.add('far');
+    });
+
+    copyIcon.addEventListener('mouseleave', function () {
+        copyIcon.classList.remove('far');
+        copyIcon.classList.add('fas');
+    });*/  // STILL WORKING ON - Copy Button soon to come
+
+    submitButton.addEventListener('click', function () {
+        let rValue = rInput.value;
+        let gValue = gInput.value;
+        let bValue = bInput.value;
+
+        if (rValue === '') {
+            rValue = '0';
+        }
+
+        if (gValue === '') {
+            gValue = '0';
+        }
+
+        if (bValue === '') {
+            bValue = '0';
+        }
+
+        color = `rgb(${rValue}, ${gValue}, ${bValue})`;
+
+        colorText.style.fontWeight = 'bold';
+        colorText.style.color = detirmineColor(rValue, gValue, bValue);
+        colorBox.style.backgroundColor = color;
+
+        if (binaryButton.innerHTML === 'Show RGBA') {
+            colorText.innerHTML = rgbToHex(rValue, gValue, bValue);
+        }
+
+        else {
+
+            let rgbaValue = rgbToBin(rValue, gValue, bValue);
+            let opacity = document.getElementById('opacity').value;
+
+            colorText.innerHTML = rgbaValue;
+            colorBox.style.backgroundColor = rgbaValue;
+            
+            if (opacity < 6) {
+                colorText.style.color = 'black';
+            }
+        }
+    }); // Event listener for form submission
+
+    infoButton.addEventListener('click', function () {
+
+        if (infoButton.innerHTML === 'i') {
+            popupContainer.style.display = 'block';
+            popup.style.display = 'flex';
+            infoButton.innerHTML = 'x';
+        }
+
+        else if (infoButton.innerHTML === 'x') {
+            popupContainer.style.display = 'none';
+            popup.style.display = 'none';
+            infoButton.innerHTML = 'i';
+        }
+    });
+
+    binaryButton.addEventListener('click', function() {
+
+        let rValue = rInput.value;
+        let gValue = gInput.value;
+        let bValue = bInput.value;
+
+        let opacityContainer = document.getElementById('hide-until-press');
+        let opacity = document.getElementById('opacity').value;
+        
+        if (binaryButton.innerHTML === 'Show RGBA') {
+
+            if (rValue || gValue || bValue || colorBox.style.backgroundColor === 'rgb(0, 0, 0)' || opacity < 10) {
+                binaryButton.innerHTML = 'Show Hexadecimal';
+                colorText.innerHTML = rgbToBin(rValue, gValue, bValue);
+                opacityContainer.style.display = 'flex';
+
+            }
+
+            else {
+                colorText.innerHTML = 'Please enter a color';
+            }
+        }
+
+        else {
+
+            if (rValue || gValue || bValue || colorBox.style.backgroundColor === 'rgb(0, 0, 0)' || opacity < 10) {
+                binaryButton.innerHTML = 'Show RGBA';
+                colorText.innerHTML = rgbToHex(rValue, gValue, bValue);
+                opacityContainer.style.display = 'none';
+            }
+
+            else {
+                colorText.innerHTML = 'Please enter a color';
+            }
+        }
+    }); // Changes from hex value display to RGBA display
+
+    function rgbToHex(r, g, b) { 
+        let finalHex = toHex(r) + toHex(g) + toHex(b);
+        if (r < 0 || g < 0 || b < 0) {
+            return 'Positive Numbers Only (:';
+        }
+        else if (r > 255 || g > 255 || b > 255) {
+            return 'Numbers must be 0-255';
+        }
+        return 'Hex: #' + finalHex;
+    }
+
+    function rgbToBin(r, g, b) {
+
+        let opacity = document.getElementById('opacity').value;
+        let aValue = opacity / 10;
+
+        let finalBin = toBin(r) + ', ' + toBin(g) + ', ' + toBin(b) + ', ' + aValue;
+
+        if (r < 0 || g < 0 || b < 0) {
+            return 'Positive Numbers Only (:';
+        }
+        else if (r > 255 || g > 255 || b > 255) {
+            return 'Numbers must be 0-255';
+        }
+        return 'rgba(' + finalBin + ')'; // STILL WORKING ON
+    } // Converts rgb to RGBA
+
+    function toHex(decimal) {
+        let basicHex = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'];
+        let allHex = [];
+        for (let i = 0; i < basicHex.length; i++) {
+            for (let j = 0; j < basicHex.length; j++) {
+
+                let newNum = basicHex[i] + basicHex[j];
+                allHex.push(newNum);
+            }
+        }
+        
+        hexNum =  allHex[decimal];
+
+        if (hexNum === '' || hexNum === undefined) {
+            return '00';
+        }
+
+        return hexNum;
+    } // Converts a number to its hex value
+
+    function toBin(num) {
+        binaryNum =  num.toString(2);
+
+        if (binaryNum === '') {
+            return '0';
+        }
+
+        return binaryNum;
+    } // STILL WORKING ON
+</script>
+</html>
